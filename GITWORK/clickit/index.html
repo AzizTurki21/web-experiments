@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Challenge</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 80px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 15px 25px;
+            margin: 5px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #clickBtn {
+            background: #4caf50;
+            color: white;
+        }
+
+        #clickBtn:hover {
+            background: #45a049;
+        }
+
+        #startBtn {
+            background: #2196f3;
+            color: white;
+        }
+
+        #startBtn:hover {
+            background: #1e88e5;
+        }
+
+        #resetBtn {
+            background: #f44336;
+            color: white;
+        }
+
+        #resetBtn:hover {
+            background: #e53935;
+        }
+
+        p {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="count">0</h1>
+        <input type="number" id="timeInput" placeholder="seconds">
+        <br>
+        <button id="startBtn">Start</button>
+        <button id="clickBtn" disabled>Click Me!</button>
+        <button id="resetBtn">Reset</button>
+        <p id="timer">Time: 0s</p>
+    </div>
+
+    <script>
+        let count = 0;
+        let timeLeft = 0;
+        let timerInterval;
+
+        const countEl = document.getElementById('count');
+        const clickBtn = document.getElementById('clickBtn');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const timerEl = document.getElementById('timer');
+        const timeInput = document.getElementById('timeInput');
+
+        function startGame() {
+            const inputTime = parseInt(timeInput.value);
+            if (isNaN(inputTime) || inputTime <= 0) return;
+
+            count = 0;
+            countEl.textContent = count;
+            timeLeft = inputTime;
+            timerEl.textContent = `Time: ${timeLeft}s`;
+            clickBtn.disabled = false;
+            startBtn.disabled = true;
+            timeInput.disabled = true;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = `Time: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    clickBtn.disabled = true;
+                    startBtn.disabled = false;
+                    timeInput.disabled = false;
+                    alert(`Time's up! You clicked ${count} times!`);
+                }
+            }, 1000);
+        }
+
+        clickBtn.addEventListener('click', () => {
+            count++;
+            countEl.textContent = count;
+        });
+
+        startBtn.addEventListener('click', startGame);
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            count = 0;
+            countEl.textContent = count;
+            timeLeft = 0;
+            timerEl.textContent = `Time: 0s`;
+            clickBtn.disabled = true;
+            startBtn.disabled = false;
+            timeInput.disabled = false;
+        });
+    </script>
+</body>
+</html>

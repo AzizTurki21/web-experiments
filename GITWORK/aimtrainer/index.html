@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>train ur aim</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(120deg, #f6d365, #fda085);
+    }
+
+    .container {
+        text-align: center;
+    }
+
+    .game-container {
+        position: relative;
+        width: 90vw;
+        height: 70vh;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    .circle {
+        position: absolute;
+        border-radius: 50%;
+        cursor: pointer;
+        animation: popIn 0.3s ease;
+        transition: transform 0.2s;
+    }
+
+    .circle:hover {
+        transform: scale(1.3);
+    }
+
+    @keyframes popIn {
+        from { transform: scale(0); }
+        to { transform: scale(1); }
+    }
+
+    .buttons {
+        margin-top: 10px;
+    }
+
+    button {
+        padding: 12px 25px;
+        margin: 5px;
+        font-size: 16px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: #2196f3;
+        color: white;
+        transition: background 0.3s;
+    }
+
+    button:hover {
+        background: #1e88e5;
+    }
+
+    p {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <p>Score: <span id="score">0</span></p>
+    <div class="buttons">
+        <button id="startBtn">start</button>
+        <button id="stopBtn" disabled>stop</button>
+    </div>
+    <div class="game-container" id="gameContainer"></div>
+</div>
+
+<script>
+const gameContainer = document.getElementById('gameContainer');
+const scoreEl = document.getElementById('score');
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
+
+let score = 0;
+let gameInterval;
+
+function randomValue(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function createCircle() {
+    const circle = document.createElement('div');
+    const size = randomValue(30, 80);
+    circle.classList.add('circle');
+    circle.style.width = `${size}px`;
+    circle.style.height = `${size}px`;
+    circle.style.left = `${randomValue(0, gameContainer.clientWidth - size)}px`;
+    circle.style.top = `${randomValue(0, gameContainer.clientHeight - size)}px`;
+    circle.style.backgroundColor = randomColor();
+
+    circle.addEventListener('click', () => {
+        score++;
+        scoreEl.textContent = score;
+        circle.remove();
+    });
+
+    gameContainer.appendChild(circle);
+
+    setTimeout(() => {
+        if (circle.parentElement) circle.remove();
+    }, 3000);
+}
+
+function startGame() {
+    score = 0;
+    scoreEl.textContent = score;
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    gameInterval = setInterval(() => {
+        const circlesCount = randomValue(1, 3);
+        for (let i = 0; i < circlesCount; i++) createCircle();
+    }, 800);
+}
+
+function stopGame() {
+    clearInterval(gameInterval);
+    gameContainer.innerHTML = '';
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    alert(`Game Over! Your score is ${score}`);
+}
+
+startBtn.addEventListener('click', startGame);
+stopBtn.addEventListener('click', stopGame);
+</script>
+</body>
+</html>
